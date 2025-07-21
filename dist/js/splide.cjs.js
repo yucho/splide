@@ -2,7 +2,7 @@
  * Splide.js
  * Version  : 4.1.4
  * License  : MIT
- * Copyright: 2022 Naotoshi Fujita
+ * Copyright: 2025 Naotoshi Fujita
  */
 'use strict';
 
@@ -1255,7 +1255,8 @@ function Layout(Splide2, Components2, options) {
 
   function cssSlideSize() {
     var gap = unit(options.gap);
-    return "calc((100%" + (gap && " + " + gap) + ")/" + (options.perPage || 1) + (gap && " - " + gap) + ")";
+    var peek = unit(options.peekWidth);
+    return "calc((100%" + (gap && " + " + gap) + (peek && " - (" + peek + " + " + gap + ") * 2") + ")/" + (options.perPage || 1) + (gap && " - " + gap) + ")";
   }
 
   function listSize() {
@@ -1292,6 +1293,14 @@ function Layout(Splide2, Components2, options) {
     return parseFloat(style(track, resolve("padding" + (right ? "Right" : "Left")))) || 0;
   }
 
+  function getPeek(index) {
+    if (options.peekWidth) {
+      return parseFloat(style(track, resolve("width"))) - (slideSize(index) * (options.perPage || 1) - getGap()) || 0;
+    }
+
+    return 0;
+  }
+
   function isOverflow() {
     return Splide2.is(FADE) || sliderSize(true) > listSize();
   }
@@ -1304,6 +1313,7 @@ function Layout(Splide2, Components2, options) {
     sliderSize: sliderSize,
     totalSize: totalSize,
     getPadding: getPadding,
+    getPeek: getPeek,
     isOverflow: isOverflow
   };
 }
@@ -1405,6 +1415,7 @@ function Move(Splide2, Components2, options) {
   var _Components2$Layout = Components2.Layout,
       slideSize = _Components2$Layout.slideSize,
       getPadding = _Components2$Layout.getPadding,
+      getPeek = _Components2$Layout.getPeek,
       totalSize = _Components2$Layout.totalSize,
       listSize = _Components2$Layout.listSize,
       sliderSize = _Components2$Layout.sliderSize;
@@ -1522,7 +1533,15 @@ function Move(Splide2, Components2, options) {
 
   function offset(index) {
     var focus = options.focus;
-    return focus === "center" ? (listSize() - slideSize(index, true)) / 2 : +focus * slideSize(index) || 0;
+    var peekOffset = getPeek(index);
+
+    if (peekOffset) {
+      var _Slides = Components2.Slides.get();
+
+      if (index === 0) peekOffset = 0;else if (index < _Slides.length - 1) peekOffset = peekOffset / 2;
+    }
+
+    return focus === "center" ? (listSize() - slideSize(index, true)) / 2 : +focus * slideSize(index) + peekOffset || 0;
   }
 
   function getLimit(max) {
@@ -3464,7 +3483,8 @@ var SplideRenderer = /*#__PURE__*/function () {
 
   _proto3.cssSlideSize = function cssSlideSize(options) {
     var gap = unit(options.gap);
-    return "calc((100%" + (gap && " + " + gap) + ")/" + (options.perPage || 1) + (gap && " - " + gap) + ")";
+    var peek = unit(options.peekWidth);
+    return "calc((100%" + (gap && " + " + gap) + (peek && " - (" + peek + " + " + gap + ") * 2") + ")/" + (options.perPage || 1) + (gap && " - " + gap) + ")";
   };
 
   _proto3.cssAspectRatio = function cssAspectRatio(options) {

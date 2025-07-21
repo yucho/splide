@@ -360,6 +360,15 @@ export interface ResponsiveOptions {
     | { top?: number | string, bottom?: number | string };
 
   /**
+   * The peek value (i.e. how much of the adjacent slides can be seen).
+   *
+   * This is different from the padding, which applies the constant value to both edges;
+   * in contrast, the peek value applies double the value to one edge when the slide index is not centered,
+   * and applies the value to both edges when the slide index is centered.
+   */
+  peekWidth?: number | string;
+
+  /**
    * Determines whether to create/find arrows or not.
    */
   arrows?: boolean;

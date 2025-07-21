@@ -406,7 +406,8 @@ export class SplideRenderer {
    */
   private cssSlideSize( options: Options ): string {
     const gap = unit( options.gap );
-    return `calc((100%${ gap && ` + ${ gap }` })/${ options.perPage || 1 }${ gap && ` - ${ gap }` })`;
+    const peek = unit( options.peekWidth );
+    return `calc((100%${ gap && ` + ${ gap }` }${ peek && ` - (${ peek } + ${ gap }) * 2` })/${ options.perPage || 1 }${ gap && ` - ${ gap }` })`;
   }
 
   /**

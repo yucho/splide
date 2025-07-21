@@ -19,6 +19,7 @@ export interface LayoutComponent extends BaseComponent {
   sliderSize( withoutGap?: boolean ): number;
   totalSize( index?: number, withoutGap?: boolean ): number;
   getPadding( right: boolean ): number;
+  getPeek( index: number ): number;
   isOverflow(): boolean;
 
   /** @internal */
@@ -178,7 +179,8 @@ export function Layout( Splide: Splide, Components: Components, options: Options
    */
   function cssSlideSize(): string {
     const gap = unit( options.gap );
-    return `calc((100%${ gap && ` + ${ gap }` })/${ options.perPage || 1 }${ gap && ` - ${ gap }` })`;
+    const peek = unit( options.peekWidth );
+    return `calc((100%${ gap && ` + ${ gap }` }${ peek && ` - (${ peek } + ${ gap }) * 2` })/${ options.perPage || 1 }${ gap && ` - ${ gap }` })`;
   }
 
   /**
@@ -261,6 +263,17 @@ export function Layout( Splide: Splide, Components: Components, options: Options
   }
 
   /**
+   * Returns the peek value.
+   */
+  function getPeek(index: number): number {
+    if ( options.peekWidth ) {
+      return (parseFloat(style( track, resolve( 'width' ) )) - (slideSize(index) * (options.perPage || 1) - getGap() )) || 0;
+    }
+
+    return 0;
+  }
+
+  /**
    * Checks if the carousel is wider than the list.
    * This method always returns `true` for a fade carousel.
    *
@@ -278,6 +291,7 @@ export function Layout( Splide: Splide, Components: Components, options: Options
     sliderSize,
     totalSize,
     getPadding,
+    getPeek,
     isOverflow,
   };
 }

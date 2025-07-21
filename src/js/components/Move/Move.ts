@@ -50,7 +50,7 @@ export interface MoveComponent extends BaseComponent {
 export function Move( Splide: Splide, Components: Components, options: Options ): MoveComponent {
   const { on, emit } = EventInterface( Splide );
   const { set } = Splide.state;
-  const { slideSize, getPadding, totalSize, listSize, sliderSize } = Components.Layout;
+  const { slideSize, getPadding, getPeek, totalSize, listSize, sliderSize } = Components.Layout;
   const { resolve, orient } = Components.Direction;
   const { list, track } = Components.Elements;
 
@@ -242,7 +242,15 @@ export function Move( Splide: Splide, Components: Components, options: Options )
    */
   function offset( index: number ): number {
     const { focus } = options;
-    return focus === 'center' ? ( listSize() - slideSize( index, true ) ) / 2 : +focus * slideSize( index ) || 0;
+    let peekOffset = getPeek(index);
+    if (peekOffset) {
+      const Slides = Components.Slides.get();
+      if (index === 0)
+        peekOffset = 0;
+      else if (index < Slides.length - 1)
+        peekOffset = peekOffset / 2;
+    }
+    return focus === 'center' ? ( listSize() - slideSize( index, true ) ) / 2 : +focus * slideSize( index ) + peekOffset || 0;
   }
 
   /**
