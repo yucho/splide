@@ -20,6 +20,7 @@ export interface LayoutComponent extends BaseComponent {
   totalSize( index?: number, withoutGap?: boolean ): number;
   getPadding( right: boolean ): number;
   getPeek( index: number ): number;
+  adaptiveEndPosition(): number;
   isOverflow(): boolean;
 
   /** @internal */
@@ -265,12 +266,20 @@ export function Layout( Splide: Splide, Components: Components, options: Options
   /**
    * Returns the peek value.
    */
-  function getPeek(index: number): number {
+  function getPeek( index: number ): number {
     if ( options.peekWidth ) {
-      return (parseFloat(style( track, resolve( 'width' ) )) - (slideSize(index) * (options.perPage || 1) - getGap() )) || 0;
+      return ( parseFloat( style( track, resolve( 'width' ) ) ) - ( slideSize( index ) * ( options.perPage || 1 ) - getGap() ) ) || 0;
     }
 
     return 0;
+  }
+
+  /**
+   * Returns the adaptive end position.
+   */
+  function adaptiveEndPosition(): number {
+    const diff = totalSize( Slides.getLength() - 1 ) - listSize();
+    return diff < 0 ? 0 : -diff;
   }
 
   /**
@@ -292,6 +301,7 @@ export function Layout( Splide: Splide, Components: Components, options: Options
     totalSize,
     getPadding,
     getPeek,
+    adaptiveEndPosition,
     isOverflow,
   };
 }

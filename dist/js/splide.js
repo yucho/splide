@@ -1294,6 +1294,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       return 0;
     }
 
+    function adaptiveEndPosition() {
+      var diff = totalSize(Slides.getLength() - 1) - listSize();
+      return diff < 0 ? 0 : -diff;
+    }
+
     function isOverflow() {
       return Splide2.is(FADE) || sliderSize(true) > listSize();
     }
@@ -1307,6 +1312,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       totalSize: totalSize,
       getPadding: getPadding,
       getPeek: getPeek,
+      adaptiveEndPosition: adaptiveEndPosition,
       isOverflow: isOverflow
     };
   }
@@ -1508,7 +1514,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
     function toPosition(index, trimming) {
       var position = orient(totalSize(index - 1) - offset(index));
-      return trimming ? trim(position) : position;
+      var trimmedPosition = trimming ? trim(position) : position;
+      if (!options.adaptiveEndIndex) return trimmedPosition;
+      var end = Components2.Layout.adaptiveEndPosition();
+      return clamp(trimmedPosition, end, 0);
     }
 
     function getPosition() {
@@ -1574,14 +1583,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         on = _EventInterface5.on,
         emit = _EventInterface5.emit;
 
-    var Move = Components2.Move;
+    var Move = Components2.Move,
+        Layout = Components2.Layout;
     var getPosition = Move.getPosition,
         getLimit = Move.getLimit,
         toPosition = Move.toPosition;
     var _Components2$Slides = Components2.Slides,
         isEnough = _Components2$Slides.isEnough,
         getLength = _Components2$Slides.getLength;
-    var omitEnd = options.omitEnd;
+    var omitEnd = options.omitEnd,
+        adaptiveEndIndex = options.adaptiveEndIndex;
     var isLoop = Splide2.is(LOOP);
     var isSlide = Splide2.is(SLIDE);
     var getNext = apply(getAdjacent, false);
@@ -1724,6 +1735,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }
 
     function getEnd() {
+      if (adaptiveEndIndex) {
+        var end2 = 0;
+        var endPosition = Layout.adaptiveEndPosition();
+
+        while (end2++ < slideCount) {
+          if (toPosition(end2) <= endPosition) {
+            break;
+          }
+        }
+
+        return clamp(end2, 0, slideCount - 1);
+      }
+
       var end = slideCount - (hasFocus() || isLoop && perMove ? 1 : perPage);
 
       while (omitEnd && end-- > 0) {

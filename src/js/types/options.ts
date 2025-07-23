@@ -369,6 +369,13 @@ export interface ResponsiveOptions {
   peekWidth?: number | string;
 
   /**
+   * Instead of `perPage`, this option allows to set the number of slides to display in a page dynamically.
+   * The last index will be where the tail end of the last slide is aligned with the end of the slider.
+   * This is useful when the slider width is not fixed.
+   */
+  adaptiveEndIndex?: boolean;
+
+  /**
    * Determines whether to create/find arrows or not.
    */
   arrows?: boolean;

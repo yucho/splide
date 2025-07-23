@@ -207,7 +207,11 @@ export function Move( Splide: Splide, Components: Components, options: Options )
    */
   function toPosition( index: number, trimming?: boolean ): number {
     const position = orient( totalSize( index - 1 ) - offset( index ) );
-    return trimming ? trim( position ) : position;
+    const trimmedPosition = trimming ? trim( position ) : position;
+    if ( !options.adaptiveEndIndex ) return trimmedPosition;
+
+    const end = Components.Layout.adaptiveEndPosition();
+    return clamp( trimmedPosition, end, 0 );
   }
 
   /**
@@ -242,12 +246,12 @@ export function Move( Splide: Splide, Components: Components, options: Options )
    */
   function offset( index: number ): number {
     const { focus } = options;
-    let peekOffset = getPeek(index);
-    if (peekOffset) {
+    let peekOffset = getPeek( index );
+    if ( peekOffset ) {
       const Slides = Components.Slides.get();
-      if (index === 0)
+      if ( index === 0 )
         peekOffset = 0;
-      else if (index < Slides.length - 1)
+      else if ( index < Slides.length - 1 )
         peekOffset = peekOffset / 2;
     }
     return focus === 'center' ? ( listSize() - slideSize( index, true ) ) / 2 : +focus * slideSize( index ) + peekOffset || 0;

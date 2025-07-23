@@ -43,10 +43,10 @@ export interface ControllerComponent extends BaseComponent {
  */
 export function Controller( Splide: Splide, Components: Components, options: Options ): ControllerComponent {
   const { on, emit } = EventInterface( Splide );
-  const { Move } = Components;
+  const { Move, Layout } = Components;
   const { getPosition, getLimit, toPosition } = Move;
   const { isEnough, getLength } = Components.Slides;
-  const { omitEnd } = options;
+  const { omitEnd, adaptiveEndIndex } = options;
   const isLoop  = Splide.is( LOOP );
   const isSlide = Splide.is( SLIDE );
   const getNext = apply( getAdjacent, false );
@@ -293,10 +293,24 @@ export function Controller( Splide: Splide, Components: Components, options: Opt
    * For example, if the slider has 10 slides and the `perPage` option is 3,
    * the slider can go to the slide 8 (the index is 7).
    * If the `omitEnd` option is available, computes the index from the slide position.
+   * If the `adaptiveEndIndex` option is available, computes the end index dynamically.
    *
    * @return An end index.
    */
   function getEnd(): number {
+    if ( adaptiveEndIndex ) {
+      let end = 0;
+      const endPosition = Layout.adaptiveEndPosition();
+      while ( end++ < slideCount ) {
+        if ( toPosition( end ) <= endPosition ) {
+          end;
+          break;
+        }
+      }
+
+      return clamp( end, 0, slideCount - 1 );
+    }
+
     let end = slideCount - ( hasFocus() || ( isLoop && perMove ) ? 1 : perPage );
 
     while ( omitEnd && end-- > 0 ) {
