@@ -1297,7 +1297,7 @@ function Layout(Splide2, Components2, options) {
   }
 
   function adaptiveEndPosition() {
-    var diff = totalSize(Slides.getLength() - 1) - listSize();
+    var diff = totalSize(Slides.getLength() - 1, true) - listSize();
     return diff < 0 ? 0 : -diff;
   }
 

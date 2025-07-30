@@ -278,7 +278,7 @@ export function Layout( Splide: Splide, Components: Components, options: Options
    * Returns the adaptive end position.
    */
   function adaptiveEndPosition(): number {
-    const diff = totalSize( Slides.getLength() - 1 ) - listSize();
+    const diff = totalSize( Slides.getLength() - 1, true ) - listSize();
     return diff < 0 ? 0 : -diff;
   }
 

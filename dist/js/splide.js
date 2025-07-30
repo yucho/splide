@@ -1295,7 +1295,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }
 
     function adaptiveEndPosition() {
-      var diff = totalSize(Slides.getLength() - 1) - listSize();
+      var diff = totalSize(Slides.getLength() - 1, true) - listSize();
       return diff < 0 ? 0 : -diff;
     }
 
