@@ -301,12 +301,12 @@ export function Controller( Splide: Splide, Components: Components, options: Opt
     if ( adaptiveEndIndex ) {
       let end = 0;
       const endPosition = Layout.adaptiveEndPosition();
-      while ( end++ < slideCount ) {
+      do {
         if ( toPosition( end ) <= endPosition ) {
           end;
           break;
         }
-      }
+      } while ( end++ < slideCount );
 
       return clamp( end, 0, slideCount - 1 );
     }

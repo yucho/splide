@@ -1739,11 +1739,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         var end2 = 0;
         var endPosition = Layout.adaptiveEndPosition();
 
-        while (end2++ < slideCount) {
+        do {
           if (toPosition(end2) <= endPosition) {
             break;
           }
-        }
+        } while (end2++ < slideCount);
 
         return clamp(end2, 0, slideCount - 1);
       }
