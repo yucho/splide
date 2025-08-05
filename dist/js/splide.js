@@ -1685,6 +1685,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }
 
     function computeDestIndex(dest, from, snapPage) {
+      endIndex = getEnd();
+
       if (isEnough() || hasFocus()) {
         var index = computeMovableDestIndex(dest);
 

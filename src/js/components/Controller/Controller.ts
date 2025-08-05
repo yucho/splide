@@ -222,6 +222,8 @@ export function Controller( Splide: Splide, Components: Components, options: Opt
    * @return A converted destination index, including clones.
    */
   function computeDestIndex( dest: number, from: number, snapPage?: boolean ): number {
+    // NOTE: update endIndex whenever we compute dest index because autoWidth can mess with widths
+    endIndex = getEnd();
     if ( isEnough() || hasFocus() ) {
       const index = computeMovableDestIndex( dest );
 

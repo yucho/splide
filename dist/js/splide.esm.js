@@ -1687,6 +1687,8 @@ function Controller(Splide2, Components2, options) {
   }
 
   function computeDestIndex(dest, from, snapPage) {
+    endIndex = getEnd();
+
     if (isEnough() || hasFocus()) {
       var index = computeMovableDestIndex(dest);
 
